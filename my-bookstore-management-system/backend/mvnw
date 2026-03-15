@@ -1,0 +1,13 @@
+#!/bin/sh
+set -e
+
+# Maven wrapper script for Unix-based systems
+MAVEN_VERSION=3.8.6
+MVN_CMD="./mvnw"
+
+if [ ! -f "$MVN_CMD" ]; then
+  echo "Maven wrapper not found. Please ensure you have the correct setup."
+  exit 1
+fi
+
+exec "$MVN_CMD" "$@"

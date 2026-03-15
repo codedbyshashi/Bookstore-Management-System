@@ -1,0 +1,2 @@
+export const formatCurrency = (value) =>
+  `$${Number(value).toFixed(2)}`;
