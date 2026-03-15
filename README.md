@@ -1,243 +1,208 @@
-📚 Bookstore Management System – Frontend
-A modern, responsive frontend application for the Bookstore Management System, built with React 18 and Vite. This application provides a seamless shopping experience, featuring secure authentication, a dynamic cart system, multi-method checkout, and a comprehensive administrative dashboard.
+# Bookstore Management System Frontend
 
-The application connects to a containerized Spring Boot backend to deliver a high-performance, full-stack solution.
+A modern, responsive frontend for the Bookstore Management System, built with React 18 and Vite. It delivers a smooth shopping experience with secure authentication, a dynamic cart, multiple checkout options, and an admin dashboard for managing inventory and orders.
 
-🚀 Live Demo
-Component
+The frontend connects to a containerized Spring Boot backend to provide a full-stack bookstore experience backed by Neon PostgreSQL.
 
-URL
+> Repository note: in this workspace, the frontend source lives in `my-bookstore-management-system/frontend`.
 
-Frontend (Netlify)
+## Live Demo
 
-View Live Demo
+| Component | URL |
+| --- | --- |
+| Frontend (Netlify) | [scintillating-alpaca-716c3a.netlify.app](https://scintillating-alpaca-716c3a.netlify.app) |
+| Backend API (Render) | [bookstore-backend-latest-ayxw.onrender.com](https://bookstore-backend-latest-ayxw.onrender.com) |
 
-Backend API (Render)
+## System Architecture
 
-API Endpoint
-
-🏗 System Architecture
-The application follows a modern cloud-native deployment strategy:
-
-Plaintext
-
-User 👤
-  ↓
-Netlify (React Frontend) 🌐
-  ↓
-HTTPS API Calls (Axios) ⚡
-  ↓
-Render (Spring Boot Backend in Docker) 🐳
-  ↓
-Neon PostgreSQL (Cloud Database) 🐘
-
-🛠 Tech Stack
-Frontend
-Core: React 18, Vite
-
-Styling: Tailwind CSS (Responsive Design)
-
-Routing: React Router DOM
-
-State & Networking: Axios, React Hooks
-
-Feedback: React Toastify, React Icons
-
-Backend (Integration)
-Framework: Spring Boot, Hibernate / JPA
-
-Security: Spring Security, JWT Authentication
-
-Infrastructure
-Containerization: Docker
-
-Hosting: Render (Backend), Netlify (Frontend)
-
-Database: Neon PostgreSQL (Serverless)
-
-✨ Features
-🌐 Public UI
-Landing Page: Modern hero section and featured books.
-
-Catalog: Browse and filter the complete collection of books.
-
-Book Details: Deep dive into descriptions, pricing, and availability.
-
-🔐 Authentication
-Secure Login: Separate logic for Admin and User modes.
-
-Registration: Easy user onboarding.
-
-JWT Integration: Automatic token management via Axios interceptors.
-
-🛒 Shopping Flow
-Cart Management: Add, remove, and adjust quantities in real-time.
-
-Multi-Method Checkout: Support for Debit Card, UPI, and Cash on Delivery (COD).
-
-Payment Flow: Dedicated UPI verification page for secure transactions.
-
-👨‍💼 Admin Panel
-Dashboard: High-level overview of store activity.
-
-Inventory Control: Full CRUD (Create, Read, Update, Delete) for book listings.
-
-Order Management: Track and update statuses for all customer orders with pagination.
-
-📂 Project Structure
-Bash
-
-frontend
-│
-├── src
-│   ├── admin        # Admin dashboard and management components
-│   ├── components   # Reusable UI components (Navbar, Footer, Cards)
-│   ├── hooks        # Custom React hooks
-│   ├── pages        # Page-level components (Home, Shop, Login)
-│   ├── services     # API service calls using Axios
-│   ├── utils        # Helper functions and formatting
-│   │
-│   ├── App.jsx      # Main application routing
-│   ├── index.css    # Global styles & Tailwind directives
-│   └── main.jsx     # Application entry point
-│
-├── package.json
-└── README.md
-
-📄 Important Routes
-Route
-
-Access
-
-Description
-
-/
-
-Public
-
-Landing page
-
-/books
-
-Public
-
-Browse catalog
-
-/login / /register
-
-Public
-
-Auth pages
-
-/cart
-
+```text
 User
+  |
+  v
+Netlify (React Frontend)
+  |
+  v
+HTTPS API Calls via Axios
+  |
+  v
+Render (Spring Boot Backend in Docker)
+  |
+  v
+Neon PostgreSQL
+```
 
-Shopping cart summary
+## Tech Stack
 
-/checkout
+### Frontend
 
-User
+- React 18
+- Vite
+- Tailwind CSS
+- React Router DOM
+- Axios
+- React Toastify
+- React Icons
 
-Shipping and payment selection
+### Backend Integration
 
-/orders
+- Spring Boot
+- Hibernate / JPA
+- Spring Security
+- JWT authentication
 
-User
+### Infrastructure
 
-Personal order history
+- Docker
+- Render
+- Netlify
+- Neon PostgreSQL
 
-/admin/dashboard
+## Features
 
-Admin
+### Public UI
 
-Store analytics overview
+- Modern landing page with a hero section and featured books
+- Catalog browsing with search, genre filters, and pagination
+- Book details page with pricing and availability information
 
-/admin/books
+### Authentication
 
-Admin
+- User registration and login
+- Separate access logic for admin and user areas
+- JWT-based authentication
+- Automatic token attachment through the shared Axios client
 
-Inventory management
+### Shopping Flow
 
-/admin/orders
+- Real-time cart management
+- Checkout flow with Debit Card, UPI, and Cash on Delivery
+- Dedicated UPI payment page with UPI ID validation
+- Order history with status and payment details
 
-Admin
+### Admin Panel
 
-Global order tracking
+- Dashboard with summary cards for books, orders, and stock insights
+- Full CRUD support for inventory management
+- Order management with filtering, status updates, and pagination
 
-⚙ Installation
-Follow these steps to set up the project locally:
+## Project Structure
 
-Clone the repository:
+```text
+Bookstore Management System
+`-- my-bookstore-management-system
+    |-- backend
+    |   |-- src/main/java/com/example/bookstore
+    |   |-- src/main/resources
+    |   `-- pom.xml
+    `-- frontend
+        |-- src
+        |   |-- admin
+        |   |-- components
+        |   |-- hooks
+        |   |-- pages
+        |   |-- services
+        |   |-- utils
+        |   |-- App.jsx
+        |   |-- index.css
+        |   `-- main.jsx
+        |-- package.json
+        `-- vite.config.js
+```
 
-Bash
+## Important Routes
 
-git clone https://github.com/your-username/bookstore-frontend.git
-cd bookstore-frontend
+| Route | Access | Description |
+| --- | --- | --- |
+| `/` | Public | Landing page |
+| `/books` | Public | Browse catalog |
+| `/books/:id` | Public | Book details |
+| `/login` | Public | Login page |
+| `/register` | Public | Registration page |
+| `/cart` | User | Shopping cart summary |
+| `/checkout` | User | Checkout and payment selection |
+| `/checkout/upi` | User | Dedicated UPI payment flow |
+| `/orders` | User | Personal order history |
+| `/admin/dashboard` | Admin | Store overview |
+| `/admin/books` | Admin | Inventory management |
+| `/admin/orders` | Admin | Global order tracking |
 
-Install dependencies:
+## Installation
 
-Bash
+Clone the repository and move into the frontend app:
 
+```bash
+git clone <your-repository-url>
+cd <your-repository-folder>/my-bookstore-management-system/frontend
 npm install
+```
 
-🌍 Environment Configuration
-Create a .env file in the root directory and add your backend API URL:
+## Environment Configuration
 
-Code snippet
+Create a `.env` file inside `my-bookstore-management-system/frontend`:
 
-# Local Development
+```env
+# Local development
 VITE_API_BASE_URL=http://localhost:8080
 
 # Production
 VITE_API_BASE_URL=https://bookstore-backend-latest-ayxw.onrender.com
+```
 
-▶ Running the Project
-Development Mode
-Bash
+## Running the Project
 
+### Development
+
+```bash
 npm run dev
+```
 
-Local URL: http://localhost:5173
+Vite runs locally at `http://localhost:5173`.
 
-Production Build
-Bash
+### Production Build
 
-# Build the project
+```bash
 npm run build
-
-# Preview the production build
 npm run preview
+```
 
-🔗 API Integration
-The frontend interacts with the following primary endpoints:
+## API Integration
 
-Auth: POST /api/auth/register, POST /api/auth/login
+The frontend primarily interacts with these endpoints:
 
-Books: GET /api/books, POST /api/books (Admin), DELETE /api/books/{id} (Admin)
+| Area | Endpoints |
+| --- | --- |
+| Auth | `POST /api/auth/register`, `POST /api/auth/login` |
+| Books | `GET /api/books`, `GET /api/books/{id}`, `POST /api/books`, `PUT /api/books/{id}`, `DELETE /api/books/{id}` |
+| Orders | `GET /api/orders`, `GET /api/orders/{id}`, `POST /api/orders`, `PUT /api/orders/{id}`, `PUT /api/orders/{id}/status` |
 
-Orders: GET /api/orders, POST /api/orders, PUT /api/orders/{id} (Admin status update)
+## Screenshots
 
-📸 Screenshots
-Add your screenshots here to showcase your UI
+Add screenshots here for:
 
-📚 Key Concepts Demonstrated
-REST API Consumption: Handling asynchronous data with Axios.
+- Landing page
+- Catalog
+- Book details
+- Cart
+- Checkout
+- UPI payment page
+- Admin dashboard
+- Admin orders
 
-Security: Role-Based Access Control (RBAC) and JWT handling.
+## Key Concepts Demonstrated
 
-State Management: Leveraging React hooks for complex UI states.
+- REST API consumption with Axios
+- JWT authentication and role-based access control
+- React hook-based state management
+- Frontend and backend integration across separate deployments
+- Cloud hosting with Netlify, Render, and Neon PostgreSQL
+- Responsive UI design using Tailwind CSS, Plus Jakarta Sans, and Space Grotesk
 
-DevOps: Deployment pipelines using Netlify and Render.
+## Notes
 
-Design: Implementing professional typography (Plus Jakarta Sans) and responsive layouts.
+- Make sure the backend CORS configuration allows the deployed frontend domain.
+- JWT data is persisted in `localStorage` and attached to requests through the shared Axios instance.
+- Some legacy orders may show fallback payment labels if they were created before the payment flow update.
 
-📌 Notes
-Ensure the Backend API has the correct CORS configuration to allow requests from the frontend domain.
+## License
 
-JWT tokens are securely stored in localStorage and attached to requests via Axios interceptors.
-
-Legacy orders created before the payment update may display fallback labels in the UI.
-
-📄 License
-This project is developed for educational and portfolio purposes.
+This project is intended for educational and portfolio use.
