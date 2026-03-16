@@ -8,6 +8,7 @@ export default function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
   const [cartCount, setCartCount] = useState(0);
+  const isAdmin = user?.role === 'ROLE_ADMIN';
 
   useEffect(() => {
     const cart = JSON.parse(localStorage.getItem('cart') || '[]');
@@ -37,7 +38,7 @@ export default function Navbar() {
             <FiBookOpen size={16} />
             Books
           </Link>
-          {(user || cartCount > 0) && (
+          {!isAdmin && (user || cartCount > 0) && (
             <Link to="/cart" className="inline-flex items-center gap-2 rounded-full px-3 py-2 hover:bg-indigo-50 hover:text-indigo-700">
               <FiShoppingCart size={16} />
               Cart
@@ -48,7 +49,7 @@ export default function Navbar() {
               )}
             </Link>
           )}
-          {user && (
+          {user && !isAdmin && (
             <Link to="/orders" className="inline-flex items-center gap-2 rounded-full px-3 py-2 hover:bg-indigo-50 hover:text-indigo-700">
               <FiGrid size={16} />
               My Orders

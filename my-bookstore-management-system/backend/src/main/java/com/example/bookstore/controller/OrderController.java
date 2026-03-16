@@ -5,14 +5,15 @@ import com.example.bookstore.dto.PageResponse;
 import com.example.bookstore.service.OrderService;
 import com.example.bookstore.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.web.server.ResponseStatusException;
+import org.springframework.http.HttpStatus;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:5173")
@@ -30,8 +31,9 @@ public class OrderController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(required = false) String status,
+            @RequestParam(required = false) String paymentStatus,
             Authentication authentication) {
-        Pageable pageable = PageRequest.of(page, size);
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id"));
         PageResponse<OrderDto> orders;
 
         boolean isAdmin = authentication != null
@@ -41,9 +43,9 @@ public class OrderController {
             Long userId = userService.findByEmail(authentication.getName())
                     .orElseThrow(() -> new RuntimeException("User not found"))
                     .getId();
-            orders = orderService.getOrdersForUser(userId, status, pageable);
+            orders = orderService.getOrdersForUser(userId, status, paymentStatus, pageable);
         } else {
-            orders = orderService.getOrders(status, pageable);
+            orders = orderService.getOrders(status, paymentStatus, pageable);
         }
 
         return ResponseEntity.ok(orders);
@@ -56,14 +58,27 @@ public class OrderController {
     }
 
     @PostMapping
-    public ResponseEntity<OrderDto> placeOrder(@RequestBody OrderDto orderDto) {
+    public ResponseEntity<OrderDto> placeOrder(@RequestBody OrderDto orderDto, Authentication authentication) {
+        if (authentication == null) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Login required to place an order");
+        }
+
+        boolean isAdmin = authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"));
+        if (isAdmin) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Admins cannot place customer orders");
+        }
+
+        Long userId = userService.findByEmail(authentication.getName())
+                .orElseThrow(() -> new RuntimeException("User not found"))
+                .getId();
+        orderDto.setUserId(userId);
         OrderDto createdOrder = orderService.placeOrder(orderDto);
         return ResponseEntity.status(201).body(createdOrder);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<OrderDto> updateOrderStatus(@PathVariable Long id, @RequestBody OrderDto orderDto) {
-        OrderDto updatedOrder = orderService.updateOrderStatus(id, orderDto.getOrderStatus());
+        OrderDto updatedOrder = orderService.updateOrder(id, orderDto);
         return ResponseEntity.ok(updatedOrder);
     }
 }

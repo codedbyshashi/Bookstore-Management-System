@@ -73,9 +73,10 @@ export default function BookFormModal({ book, isOpen, onClose, onSubmit }) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/45 p-4 backdrop-blur-sm">
-      <div className="w-full max-w-3xl overflow-hidden rounded-[28px] border border-white/70 bg-white shadow-2xl">
-        <div className="border-b border-slate-100 bg-gradient-to-r from-indigo-600 via-indigo-500 to-sky-500 px-6 py-5 text-white">
+    <div className="fixed inset-0 z-[80] overflow-y-auto bg-slate-950/55 p-4 pt-24 backdrop-blur-sm md:p-6 md:pt-10">
+      <div className="mx-auto flex min-h-full w-full items-start justify-center">
+        <div className="flex w-full max-w-4xl flex-col overflow-hidden rounded-[28px] border border-white/70 bg-white shadow-2xl max-h-[calc(100vh-2.5rem)] md:max-h-[calc(100vh-5rem)]">
+        <div className="shrink-0 border-b border-slate-100 bg-gradient-to-r from-indigo-600 via-indigo-500 to-sky-500 px-6 py-5 text-white">
           <div className="flex items-start justify-between gap-4">
             <div className="flex items-center gap-3">
               <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/15">
@@ -100,7 +101,7 @@ export default function BookFormModal({ book, isOpen, onClose, onSubmit }) {
           </div>
         </div>
 
-        <div className="p-6">
+        <div className="overflow-y-auto p-6">
           <div className="mb-5 grid gap-3 rounded-2xl bg-slate-50 p-4 text-sm text-slate-600 md:grid-cols-3">
             <div className="rounded-2xl bg-white px-4 py-3 shadow-sm">
               <p className="font-semibold text-slate-900">ISBN</p>
@@ -207,6 +208,7 @@ export default function BookFormModal({ book, isOpen, onClose, onSubmit }) {
             </div>
           </form>
         </div>
+      </div>
       </div>
     </div>
   );

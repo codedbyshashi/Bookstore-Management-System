@@ -13,7 +13,7 @@ export default function Sidebar({ desktopOpen, mobileOpen, onDesktopToggle, onMo
 
   return (
     <aside
-      className={`fixed inset-y-4 left-4 z-40 h-[calc(100vh-2rem)] w-72 overflow-visible transition-all duration-300 md:sticky md:top-0 md:z-20 md:h-fit md:shrink-0 md:self-start md:translate-x-0 ${
+      className={`fixed inset-y-4 left-4 z-40 h-[calc(100vh-2rem)] w-72 overflow-visible transition-all duration-300 md:sticky md:top-24 md:z-20 md:h-fit md:shrink-0 md:self-start md:translate-x-0 ${
         mobileOpen ? 'translate-x-0' : '-translate-x-[120%]'
       } ${
         desktopOpen ? 'md:w-72' : 'md:w-24'

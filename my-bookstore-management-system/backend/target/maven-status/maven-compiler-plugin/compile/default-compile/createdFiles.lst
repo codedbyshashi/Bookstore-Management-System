@@ -1,6 +1,7 @@
 com\example\bookstore\controller\BookController.class
 com\example\bookstore\service\OrderService.class
 com\example\bookstore\service\UserService.class
+com\example\bookstore\dto\OrderItemDto.class
 com\example\bookstore\model\Book.class
 com\example\bookstore\security\JwtTokenProvider.class
 com\example\bookstore\service\BookService.class
@@ -20,4 +21,5 @@ com\example\bookstore\controller\OrderController.class
 com\example\bookstore\dto\OrderDto.class
 com\example\bookstore\exception\GlobalExceptionHandler.class
 com\example\bookstore\exception\ErrorResponse.class
+com\example\bookstore\model\OrderItem.class
 com\example\bookstore\config\SecurityConfig.class

@@ -42,7 +42,7 @@ export default function AdminBookFormPage() {
         await createBook(form);
         toast.success('Book added');
       }
-      navigate('/books');
+      navigate('/admin/books');
     } catch (err) {
       toast.error('Submission failed');
       console.error(err);

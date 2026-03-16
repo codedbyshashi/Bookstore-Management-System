@@ -8,11 +8,12 @@ import {
   FiSmartphone,
   FiTruck,
 } from 'react-icons/fi';
-import { useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import { placeOrder } from '../services/orderService';
 import { toast } from 'react-toastify';
 import { formatCurrency } from '../utils/format';
 import { formatPaymentStatus } from '../utils/payment';
+import { useAuth } from '../hooks/useAuth';
 
 const PENDING_UPI_KEY = 'pendingUpiCheckout';
 
@@ -49,28 +50,38 @@ const paymentOptions = [
 export default function CheckoutPage() {
   const cart = JSON.parse(localStorage.getItem('cart') || '[]');
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [loading, setLoading] = useState(false);
   const [selectedPayment, setSelectedPayment] = useState(paymentOptions[0].id);
 
   const total = useMemo(() => cart.reduce((sum, item) => sum + item.book.price * item.quantity, 0), [cart]);
+  const itemCount = useMemo(() => cart.reduce((sum, item) => sum + item.quantity, 0), [cart]);
   const activePayment = paymentOptions.find((option) => option.id === selectedPayment) || paymentOptions[0];
+  const hasUnavailableItems = cart.some(
+    (item) => Number(item.book.stockQuantity || 0) < item.quantity || Number(item.book.stockQuantity || 0) === 0,
+  );
 
-  const buildBaseOrderPayload = () => {
-    const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
-    return {
-      userId: currentUser.id,
-      bookIds: cart.map((item) => item.book.id),
-      orderStatus: 'PENDING',
-      paymentMethod: activePayment.id,
-      paymentStatus: activePayment.paymentStatus,
-    };
-  };
+  if (user?.role === 'ROLE_ADMIN') {
+    return <Navigate to="/admin/orders" replace />;
+  }
+
+  const buildBaseOrderPayload = () => ({
+    bookIds: cart.map((item) => item.book.id),
+    items: cart.map((item) => ({
+      bookId: item.book.id,
+      quantity: item.quantity,
+    })),
+    itemCount,
+    totalAmount: total,
+    orderStatus: 'PENDING',
+    paymentMethod: activePayment.id,
+    paymentStatus: activePayment.paymentStatus,
+  });
 
   const handleCheckout = async () => {
     if (!cart.length) return;
 
-    const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
-    if (!currentUser?.id) {
+    if (!user?.id) {
       toast.error('Please login before placing an order');
       navigate('/login');
       return;
@@ -115,6 +126,23 @@ export default function CheckoutPage() {
     return <p className="text-center text-slate-600">Cart is empty. Add books first.</p>;
   }
 
+  if (hasUnavailableItems) {
+    return (
+      <div className="mx-auto max-w-3xl rounded-[32px] border border-rose-200 bg-white/95 p-8 text-center shadow-xl">
+        <h1 className="font-display text-3xl font-bold text-slate-950">Cart needs attention</h1>
+        <p className="mt-3 text-sm leading-7 text-slate-600">
+          One or more cart items are above available stock or out of stock. Please update the cart before continuing to payment.
+        </p>
+        <button
+          onClick={() => navigate('/cart')}
+          className="mt-6 rounded-full bg-slate-900 px-5 py-3 font-semibold text-white transition hover:bg-indigo-700"
+        >
+          Back to Cart
+        </button>
+      </div>
+    );
+  }
+
   return (
     <div className="mx-auto grid max-w-6xl gap-6 lg:grid-cols-[1.08fr_0.92fr]">
       <section className="overflow-hidden rounded-[34px] border border-white/70 bg-white/85 shadow-xl backdrop-blur">
@@ -129,7 +157,7 @@ export default function CheckoutPage() {
             </div>
           </div>
           <p className="mt-4 max-w-2xl text-sm leading-7 text-slate-200">
-            Pick how you want to pay. UPI now continues to a dedicated payment page where the customer enters a UPI ID before the order is marked as paid.
+            Pick how you want to pay. Orders now carry item-by-item quantity details, and stock is validated before the order is accepted.
           </p>
         </div>
 
@@ -184,11 +212,17 @@ export default function CheckoutPage() {
 
       <section className="rounded-[34px] border border-white/70 bg-white/92 p-6 shadow-xl backdrop-blur sm:p-8">
         <h2 className="font-display text-2xl font-bold text-slate-950">Order summary</h2>
+        <p className="mt-2 text-sm text-slate-500">{itemCount} total item{itemCount === 1 ? '' : 's'} across {cart.length} title{cart.length === 1 ? '' : 's'}</p>
         <div className="mt-5 space-y-3">
           {cart.map((item) => (
-            <div key={item.book.id} className="flex items-center justify-between rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm">
-              <span className="pr-4 text-slate-700">{item.book.title} x {item.quantity}</span>
-              <span className="font-semibold text-slate-900">{formatCurrency(item.book.price * item.quantity)}</span>
+            <div key={item.book.id} className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm">
+              <div className="flex items-center justify-between gap-4">
+                <span className="pr-4 text-slate-700">{item.book.title}</span>
+                <span className="font-semibold text-slate-900">{formatCurrency(item.book.price * item.quantity)}</span>
+              </div>
+              <p className="mt-1 text-xs uppercase tracking-[0.14em] text-slate-400">
+                Quantity {item.quantity} | Unit price {formatCurrency(item.book.price)}
+              </p>
             </div>
           ))}
         </div>

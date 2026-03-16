@@ -90,6 +90,13 @@ export default function DashboardPage() {
       .slice(0, 5);
 
     const bookUsage = orders.reduce((accumulator, order) => {
+      if (order.items?.length) {
+        order.items.forEach((item) => {
+          accumulator[item.bookId] = (accumulator[item.bookId] || 0) + Number(item.quantity || 0);
+        });
+        return accumulator;
+      }
+
       (order.bookIds || []).forEach((bookId) => {
         accumulator[bookId] = (accumulator[bookId] || 0) + 1;
       });
@@ -380,7 +387,7 @@ export default function DashboardPage() {
                         </span>
                       </div>
                       <p className="mt-2 text-sm text-slate-500">
-                        User #{order.userId} | {(order.bookIds || []).length} book{(order.bookIds || []).length === 1 ? '' : 's'} | {formatPaymentMethod(order.paymentMethod, order.paymentStatus)}
+                        User #{order.userId} | {order.itemCount || (order.bookIds || []).length} item{(order.itemCount || (order.bookIds || []).length) === 1 ? '' : 's'} | {formatPaymentMethod(order.paymentMethod, order.paymentStatus)}
                       </p>
                     </div>
                     <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">

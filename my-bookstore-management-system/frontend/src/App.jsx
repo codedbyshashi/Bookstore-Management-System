@@ -14,6 +14,7 @@ import CartPage from './pages/CartPage';
 import CheckoutPage from './pages/CheckoutPage';
 import OrdersPage from './pages/OrdersPage';
 import UpiPaymentPage from './pages/UpiPaymentPage';
+import AdminBookFormPage from './pages/AdminBookFormPage';
 import AdminLayout from './admin/AdminLayout';
 import DashboardPage from './admin/DashboardPage';
 import BooksPageAdmin from './admin/BooksPage';
@@ -64,6 +65,7 @@ export default function App() {
             <Route index element={<DashboardPage />} />
             <Route path="dashboard" element={<DashboardPage />} />
             <Route path="books" element={<BooksPageAdmin />} />
+            <Route path="books/:id/edit" element={<AdminBookFormPage />} />
             <Route path="orders" element={<OrdersPageAdmin />} />
           </Route>
         </Routes>

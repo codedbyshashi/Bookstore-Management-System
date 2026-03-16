@@ -1,8 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { FiCheckCircle, FiClock, FiPackage, FiTruck } from 'react-icons/fi';
+import { Navigate } from 'react-router-dom';
+import {
+  FiCalendar,
+  FiClock,
+  FiCreditCard,
+  FiPackage,
+  FiTruck,
+} from 'react-icons/fi';
 import { getOrders } from '../services/orderService';
 import LoadingSpinner from '../components/LoadingSpinner';
 import Pagination from '../components/Pagination';
+import { useAuth } from '../hooks/useAuth';
+import { formatCurrency, formatDateTime } from '../utils/format';
 import { formatOrderStatus, formatPaymentMethod, formatPaymentStatus } from '../utils/payment';
 
 const getOrderStatusClasses = (status) => {
@@ -18,7 +27,16 @@ const getPaymentStatusClasses = (status) => {
   return 'bg-slate-100 text-slate-700 border-slate-200';
 };
 
+const getDeliveryMessage = (order) => {
+  if (order.orderStatus === 'COMPLETED') return 'The bookstore marked this order as completed.';
+  if (order.orderStatus === 'CANCELLED') return 'This order was cancelled and any reserved stock was returned.';
+  if (order.paymentStatus === 'PAY_ON_DELIVERY') return 'Payment will be collected when the order is delivered.';
+  if (order.paymentStatus === 'PAID') return 'Payment is complete and the order is ready for fulfillment.';
+  return 'The bookstore is reviewing your order and payment state.';
+};
+
 export default function OrdersPage() {
+  const { user } = useAuth();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
@@ -48,10 +66,14 @@ export default function OrdersPage() {
     fetch();
   }, [page, size]);
 
+  if (user?.role === 'ROLE_ADMIN') {
+    return <Navigate to="/admin/orders" replace />;
+  }
+
   if (loading) return <LoadingSpinner />;
 
   return (
-    <div className="mx-auto max-w-5xl space-y-6">
+    <div className="mx-auto max-w-6xl space-y-6">
       <div className="rounded-[32px] border border-white/70 bg-white/90 p-6 shadow-xl backdrop-blur sm:p-8">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-3">
@@ -86,7 +108,7 @@ export default function OrdersPage() {
           </div>
         </div>
         <p className="mt-4 text-sm leading-7 text-slate-600">
-          Track each order with clearer payment details, cleaner badges, and paginated browsing.
+          Every order now includes item-level quantity details, payment state, order totals, and the latest store update.
         </p>
       </div>
 
@@ -97,7 +119,7 @@ export default function OrdersPage() {
           </div>
           <h2 className="mt-4 font-display text-2xl font-bold text-slate-950">No orders yet</h2>
           <p className="mt-2 text-sm leading-7 text-slate-600">
-            Once you place an order, it will appear here with payment method and payment status.
+            Once you place an order, it will appear here with quantity, payment, and delivery details.
           </p>
         </div>
       ) : (
@@ -108,7 +130,7 @@ export default function OrdersPage() {
                 key={order.id}
                 className="rounded-[28px] border border-white/70 bg-white/92 p-5 shadow-lg backdrop-blur transition hover:-translate-y-0.5 hover:shadow-xl sm:p-6"
               >
-                <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
                   <div>
                     <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-400">Order #{order.id}</p>
                     <div className="mt-3 flex flex-wrap gap-2">
@@ -119,23 +141,64 @@ export default function OrdersPage() {
                         {formatPaymentStatus(order.paymentStatus)}
                       </span>
                     </div>
+                    <div className="mt-4 flex flex-wrap items-center gap-4 text-sm text-slate-500">
+                      <span className="inline-flex items-center gap-2">
+                        <FiCalendar size={14} />
+                        Placed {formatDateTime(order.createdAt)}
+                      </span>
+                      <span className="inline-flex items-center gap-2">
+                        <FiClock size={14} />
+                        Updated {formatDateTime(order.updatedAt)}
+                      </span>
+                    </div>
                   </div>
-                  <div className="rounded-2xl bg-slate-50 px-4 py-3 text-sm text-slate-600">
-                    <p className="font-semibold text-slate-900">Payment Method</p>
-                    <p className="mt-1">{formatPaymentMethod(order.paymentMethod, order.paymentStatus)}</p>
+
+                  <div className="grid gap-3 sm:grid-cols-3">
+                    <div className="rounded-2xl bg-slate-50 px-4 py-3 text-sm text-slate-600">
+                      <p className="font-semibold text-slate-900">Payment Method</p>
+                      <p className="mt-1">{formatPaymentMethod(order.paymentMethod, order.paymentStatus)}</p>
+                    </div>
+                    <div className="rounded-2xl bg-slate-50 px-4 py-3 text-sm text-slate-600">
+                      <p className="font-semibold text-slate-900">Items</p>
+                      <p className="mt-1">{order.itemCount} total</p>
+                    </div>
+                    <div className="rounded-2xl bg-slate-50 px-4 py-3 text-sm text-slate-600">
+                      <p className="font-semibold text-slate-900">Order Total</p>
+                      <p className="mt-1">{formatCurrency(order.totalAmount)}</p>
+                    </div>
                   </div>
                 </div>
 
-                <div className="mt-5 grid gap-3 sm:grid-cols-2">
+                <div className="mt-5 grid gap-4 xl:grid-cols-[1.25fr_0.75fr]">
                   <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
-                    <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">Books</p>
-                    <p className="mt-2 text-sm text-slate-700">{order.bookIds?.join(', ') || 'No books listed'}</p>
+                    <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">Items Ordered</p>
+                    <div className="mt-3 space-y-3">
+                      {(order.items || []).map((item) => (
+                        <div key={`${order.id}-${item.bookId}`} className="flex flex-col gap-2 rounded-2xl border border-white bg-white px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+                          <div>
+                            <p className="font-semibold text-slate-900">{item.title}</p>
+                            <p className="text-sm text-slate-500">{item.author}</p>
+                          </div>
+                          <div className="text-sm text-slate-600 sm:text-right">
+                            <p>Qty {item.quantity} x {formatCurrency(item.unitPrice)}</p>
+                            <p className="font-semibold text-slate-900">{formatCurrency(item.lineTotal)}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
                   </div>
+
                   <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
-                    <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">Delivery</p>
-                    <div className="mt-2 flex items-center gap-2 text-sm text-slate-700">
-                      <FiTruck size={16} />
-                      {order.paymentStatus === 'PAY_ON_DELIVERY' ? 'Collect payment on delivery' : 'Payment handled before delivery'}
+                    <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">Delivery and Payment</p>
+                    <div className="mt-3 space-y-3 text-sm text-slate-600">
+                      <div className="inline-flex items-center gap-2 rounded-full bg-white px-3 py-1.5">
+                        <FiCreditCard size={14} />
+                        {formatPaymentMethod(order.paymentMethod, order.paymentStatus)}
+                      </div>
+                      <div className="inline-flex items-center gap-2 rounded-full bg-white px-3 py-1.5">
+                        <FiTruck size={14} />
+                        {getDeliveryMessage(order)}
+                      </div>
                     </div>
                   </div>
                 </div>
