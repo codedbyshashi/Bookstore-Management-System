@@ -15,7 +15,7 @@ export default function AdminLayout() {
         }`}
         onClick={() => setMobileSidebarOpen(false)}
       />
-      <div className="mx-auto flex max-w-[1600px] gap-4 lg:gap-6">
+      <div className="mx-auto flex max-w-[1600px] gap-6 lg:gap-8">
         <Sidebar
           desktopOpen={desktopSidebarOpen}
           mobileOpen={mobileSidebarOpen}
