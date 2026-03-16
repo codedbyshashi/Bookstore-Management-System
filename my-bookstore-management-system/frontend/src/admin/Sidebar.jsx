@@ -24,17 +24,17 @@ export default function Sidebar({ desktopOpen, mobileOpen, onDesktopToggle, onMo
           type="button"
           onClick={onMobileClose}
           aria-label="Close admin sidebar"
-          className="absolute right-4 top-6 inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-500 shadow-sm transition hover:border-indigo-200 hover:text-indigo-600 md:hidden"
+          className="absolute right-4 top-5 inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/70 bg-gradient-to-br from-slate-950 to-indigo-600 text-white shadow-[0_14px_35px_rgba(30,41,59,0.28)] ring-4 ring-white/80 transition hover:-translate-y-0.5 hover:from-indigo-600 hover:to-cyan-500 md:hidden"
         >
-          <FiChevronLeft size={18} />
+          <FiChevronLeft size={20} />
         </button>
         <button
           type="button"
           onClick={onDesktopToggle}
           aria-label={isExpanded ? 'Collapse admin sidebar' : 'Expand admin sidebar'}
-          className="absolute right-0 top-6 z-10 hidden h-9 w-9 translate-x-1/2 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-500 shadow-sm transition hover:border-indigo-200 hover:text-indigo-600 md:inline-flex"
+          className="absolute right-0 top-5 z-20 hidden h-11 w-11 translate-x-1/2 items-center justify-center rounded-full border border-white/70 bg-gradient-to-br from-slate-950 to-indigo-600 text-white shadow-[0_14px_35px_rgba(30,41,59,0.28)] ring-4 ring-white/85 transition hover:-translate-y-0.5 hover:from-indigo-600 hover:to-cyan-500 md:inline-flex"
         >
-          {isExpanded ? <FiChevronLeft size={18} /> : <FiChevronRight size={18} />}
+          {isExpanded ? <FiChevronLeft size={20} /> : <FiChevronRight size={20} />}
         </button>
         <div className={`flex items-center ${isExpanded ? 'gap-3' : 'justify-center'}`}>
           <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-600 text-lg font-bold text-white shadow-sm">
