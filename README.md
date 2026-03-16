@@ -1,335 +1,345 @@
-Bookstore Management System – Frontend
+# Bookstore Management System
 
-Frontend for the Bookstore Management System, built using React, Vite, Tailwind CSS, Axios, and React Router.
+A full-stack bookstore application with a React 18 + Vite frontend and a Spring Boot backend. The project covers public browsing, authentication, cart and checkout flows, order management, and an admin dashboard for managing books and store activity.
 
-This application connects to a Spring Boot backend and provides a full online bookstore experience including authentication, cart, checkout, order management, and an admin dashboard.
+In this repository, the application code lives inside `my-bookstore-management-system/`.
 
-🚀 Live Demo
+## Live Deployment
 
-Frontend (Netlify)
-https://scintillating-alpaca-716c3a.netlify.app
+| Component | URL |
+| --- | --- |
+| Frontend (Netlify) | [scintillating-alpaca-716c3a.netlify.app](https://scintillating-alpaca-716c3a.netlify.app) |
+| Backend API (Render) | [bookstore-backend-latest-ayxw.onrender.com](https://bookstore-backend-latest-ayxw.onrender.com) |
 
-Backend API (Render)
-https://bookstore-backend-latest-ayxw.onrender.com
+## System Architecture
 
-🏗 System Architecture
+```text
 User
- ↓
+  |
+  v
 Netlify (React Frontend)
- ↓
-HTTPS API Calls
- ↓
-Render (Spring Boot Backend running in Docker)
- ↓
-Neon PostgreSQL (Cloud Database)
+  |
+  v
+HTTPS API calls via Axios
+  |
+  v
+Render (Spring Boot backend in Docker)
+  |
+  v
+Neon PostgreSQL
+```
+
+## Tech Stack
+
+| Layer | Technologies |
+| --- | --- |
+| Frontend | React 18, Vite, Tailwind CSS, React Router DOM, Axios, React Toastify, React Icons |
+| Backend | Spring Boot 2.7, Spring Security, Spring Data JPA, Hibernate, JWT, Bean Validation |
+| Database | PostgreSQL |
+| Tooling | Maven Wrapper, Docker, Vite |
+| Hosting | Netlify, Render, Neon |
+
+## Features
+
+### Frontend
+
+- Modern landing page with featured books
+- Catalog browsing with search, genre filtering, and pagination
+- Book details page
+- Login and registration flows
+- JWT-based auth persistence in the client
+- Cart management with real-time quantity updates
+- Checkout flow for Debit Card, UPI, and Cash on Delivery
+- Dedicated UPI payment confirmation page
+- User order history with payment and order status visibility
+
+### Backend
+
+- REST APIs for auth, books, and orders
+- Role-based access control for admin and user flows
+- JWT-secured endpoints with Spring Security
+- Paginated book and order responses
+- Admin-only book creation, update, and deletion
+- Admin order status management
+- Swagger UI support for API inspection
+- Dockerized backend deployment
+
+### Admin Experience
+
+- Dashboard with totals for books, orders, completed orders, and low-stock items
+- Book inventory CRUD management
+- Paginated order management with status filters
+- Ability to mark orders as completed or cancelled
+
+## Repository Structure
+
+```text
+Bookstore Management System
+`-- my-bookstore-management-system
+    |-- backend
+    |   |-- src/main/java/com/example/bookstore
+    |   |   |-- config
+    |   |   |-- controller
+    |   |   |-- dto
+    |   |   |-- exception
+    |   |   |-- model
+    |   |   |-- repository
+    |   |   |-- security
+    |   |   `-- service
+    |   |-- src/main/resources
+    |   |   |-- application.properties
+    |   |   `-- data.sql
+    |   |-- Dockerfile
+    |   `-- pom.xml
+    `-- frontend
+        |-- src
+        |   |-- admin
+        |   |-- components
+        |   |-- hooks
+        |   |-- pages
+        |   |-- services
+        |   |-- utils
+        |   |-- App.jsx
+        |   |-- index.css
+        |   `-- main.jsx
+        |-- package.json
+        `-- vite.config.js
+```
+
+## Frontend Routes
+
+| Route | Access | Description |
+| --- | --- | --- |
+| `/` | Public | Landing page |
+| `/books` | Public | Browse catalog |
+| `/books/:id` | Public | Book details |
+| `/login` | Public | Login |
+| `/register` | Public | Register |
+| `/cart` | User | Shopping cart |
+| `/checkout` | User | Checkout and payment selection |
+| `/checkout/upi` | User | UPI payment flow |
+| `/orders` | User | Personal order history |
+| `/admin/dashboard` | Admin | Dashboard overview |
+| `/admin/books` | Admin | Inventory management |
+| `/admin/orders` | Admin | Global order management |
 
-This architecture demonstrates a modern full-stack cloud deployment.
+## Backend API Overview
 
-🛠 Tech Stack
-Frontend
+| Area | Endpoints |
+| --- | --- |
+| Auth | `POST /api/auth/register`, `POST /api/auth/login` |
+| Books | `GET /api/books`, `GET /api/books/{id}`, `POST /api/books`, `PUT /api/books/{id}`, `DELETE /api/books/{id}` |
+| Orders | `GET /api/orders`, `GET /api/orders/{id}`, `POST /api/orders`, `PUT /api/orders/{id}` |
+| Docs | `/swagger-ui/index.html`, `/v3/api-docs` |
 
-React 18
+## Local Development Setup
 
-Vite
+### Prerequisites
 
-Tailwind CSS
+- Node.js 18+ and npm
+- Java 17+ for local Spring Boot development
+- PostgreSQL
+- Git
 
-Axios
+### 1. Clone the Repository
 
-React Router DOM
+```bash
+git clone <your-repository-url>
+cd <your-repository-folder>/my-bookstore-management-system
+```
 
-React Toastify
+### 2. Configure the Backend for Local Development
 
-React Icons
+Update `backend/src/main/resources/application.properties` with your local values, or override them using environment variables.
 
-Backend
+Recommended local values:
 
-Spring Boot
+```properties
+spring.datasource.url=jdbc:postgresql://localhost:5432/bookstore
+spring.datasource.username=postgres
+spring.datasource.password=postgres
+spring.datasource.driver-class-name=org.postgresql.Driver
 
-Spring Security
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.database-platform=org.hibernate.dialect.PostgreSQLDialect
 
-JWT Authentication
+frontend.url=http://localhost:5173
+server.port=8080
 
-Hibernate / JPA
+jwt.secret=change-this-secret-for-local-dev
+jwt.expiration=3600000
+```
 
-Infrastructure
+Important:
 
-Docker (containerized backend)
+- The current repository contains concrete database credentials in `backend/src/main/resources/application.properties`.
+- For local work and production, replace them or override them with your own environment-specific values.
+- Do not commit real secrets to source control.
 
-Render (backend hosting)
+### 3. Configure the Frontend for Local Development
 
-Netlify (frontend hosting)
+Create `frontend/.env`:
 
-Neon PostgreSQL (cloud database)
-
-✨ Main Features
-Public UI
-
-polished landing page
-
-featured books section
-
-browse books catalog
-
-book details page
-
-Authentication
-
-login page with Admin / User mode switch
-
-registration page with improved UI
-
-JWT authentication
-
-automatic token handling with Axios
-
-Shopping Flow
-Cart
-
-add/remove books
-
-cart summary
-
-Checkout
-
-checkout form
-
-payment method selection
-
-Supported payment options:
-
-debit card
-
-UPI
-
-cash on delivery
-
-UPI Payment
-
-dedicated UPI entry page
-
-UPI ID validation before confirming payment
-
-Orders
-
-User order management includes:
-
-paginated order history
-
-payment method display
-
-payment status display
-
-order status tracking
-
-Admin Panel
-
-Admin users can access:
-
-Admin Dashboard
-
-overview of system activity
-
-Book Management
-
-add books
-
-edit books
-
-delete books
-
-manage inventory
-
-Order Management
-
-view all orders
-
-update order status
-
-pagination support
-
-📂 Folder Structure
-frontend
-│
-├── src
-│   ├── admin
-│   ├── components
-│   ├── hooks
-│   ├── pages
-│   ├── services
-│   ├── utils
-│   │
-│   ├── App.jsx
-│   ├── index.css
-│   └── main.jsx
-│
-├── package.json
-└── README.md
-📄 Important Pages
-Route	Description
-/	landing page
-/books	browse books
-/books/:id	book details
-/login	login
-/register	registration
-/cart	shopping cart
-/checkout	checkout
-/checkout/upi	UPI payment
-/orders	user orders
-/admin/dashboard	admin dashboard
-/admin/books	admin book management
-/admin/orders	admin order management
-⚙ Installation
-
-From the frontend directory:
-
-npm install
-🌍 Environment Configuration
-
-Create a .env file.
-
-Example:
-
+```env
 VITE_API_BASE_URL=http://localhost:8080
+```
 
-For production this value points to the deployed backend API.
+### 4. Install Dependencies
 
-Example:
+Frontend:
 
-VITE_API_BASE_URL=https://bookstore-backend-latest-ayxw.onrender.com
-▶ Run Development Server
+```bash
+cd frontend
+npm install
+cd ..
+```
+
+Backend dependencies are handled through the Maven wrapper.
+
+### 5. Run the Backend
+
+From `my-bookstore-management-system/backend`:
+
+Windows:
+
+```bash
+mvnw.cmd spring-boot:run
+```
+
+macOS / Linux:
+
+```bash
+./mvnw spring-boot:run
+```
+
+### 6. Run the Frontend
+
+From `my-bookstore-management-system/frontend`:
+
+```bash
 npm run dev
+```
 
-Local development URL:
+### 7. Local URLs
 
-http://localhost:5173
-📦 Production Build
+| Service | URL |
+| --- | --- |
+| Frontend | `http://localhost:5173` |
+| Backend API | `http://localhost:8080` |
+| Swagger UI | `http://localhost:8080/swagger-ui/index.html` |
 
-Build the application:
+## Demo Accounts
 
+The backend bootstraps demo users on startup if they do not already exist:
+
+| Role | Email | Password |
+| --- | --- | --- |
+| Admin | `admin@example.com` | `password` |
+| User | `user@example.com` | `password` |
+
+Note:
+
+- Additional sample books and orders exist in `backend/src/main/resources/data.sql`.
+- If you want that data locally, import it into your database or enable SQL initialization for your environment.
+
+## Production Deployment
+
+### Frontend Production
+
+Build the frontend from `my-bookstore-management-system/frontend`:
+
+```bash
 npm run build
+```
 
-Preview production build locally:
+Deployment notes:
 
-npm run preview
-🔗 API Integration
-Authentication
-POST /api/auth/register
-POST /api/auth/login
-Books
-GET /api/books
-GET /api/books/{id}
-POST /api/books      (admin)
-PUT /api/books/{id}  (admin)
-DELETE /api/books/{id} (admin)
-Orders
-GET /api/orders
-GET /api/orders/{id}
-POST /api/orders
-PUT /api/orders/{id}   (admin status update)
-🎨 UI Design Notes
+- Build command: `npm run build`
+- Publish directory: `dist`
+- Required environment variable: `VITE_API_BASE_URL=https://bookstore-backend-latest-ayxw.onrender.com`
 
-modern typography using
-Plus Jakarta Sans and Space Grotesk
+### Backend Production
 
-responsive layout using Tailwind CSS
+The backend includes a Dockerfile in `my-bookstore-management-system/backend/Dockerfile`.
 
-improved book card design
+Build locally:
 
-fallback behavior for missing book images
+```bash
+cd backend
+docker build -t bookstore-backend .
+```
 
-centered authentication pages
+Run locally with Docker:
 
-improved checkout experience
+```bash
+docker run -p 8080:8080 bookstore-backend
+```
 
-📸 Screenshots
+Recommended production environment variables:
 
-You can add screenshots of key pages here.
+| Variable | Purpose | Example |
+| --- | --- | --- |
+| `SPRING_DATASOURCE_URL` | PostgreSQL connection string | `jdbc:postgresql://<host>:5432/<db>` |
+| `SPRING_DATASOURCE_USERNAME` | Database username | `bookstore_user` |
+| `SPRING_DATASOURCE_PASSWORD` | Database password | `change-me` |
+| `FRONTEND_URL` | Allowed frontend origin for CORS | `https://your-frontend.netlify.app` |
+| `PORT` | Backend server port | `8080` |
+| `JWT_SECRET` | JWT signing secret | `use-a-long-random-secret` |
+| `JWT_EXPIRATION` | Token lifetime in milliseconds | `3600000` |
 
-Example sections:
+Deployment notes:
 
-Landing Page
-Books Catalog
-Book Details
-Cart
-Checkout
-Admin Dashboard
-Admin Orders
-📚 Key Concepts Demonstrated
+- Make sure `FRONTEND_URL` exactly matches the frontend domain.
+- Use secure production secrets instead of the values currently committed in `application.properties`.
+- Render can build the backend directly from the Dockerfile in the `backend` folder.
 
-This project demonstrates several important backend and frontend concepts:
+## Build Commands
 
-REST API design
+### Frontend
 
-JWT authentication
+```bash
+cd frontend
+npm run build
+```
 
-role-based authorization (Admin / User)
+### Backend
 
-pagination in APIs
+```bash
+cd backend
+mvnw.cmd clean package
+```
 
-CORS configuration
+macOS / Linux:
 
-cloud database integration
+```bash
+cd backend
+./mvnw clean package
+```
 
-Docker containerization
+## Operational Notes
 
-cloud deployment
+- The frontend Axios client uses `VITE_API_BASE_URL` and automatically attaches the JWT token after login.
+- The backend allows public access to auth routes, Swagger routes, and `GET /api/books`.
+- Book creation, updates, and deletes are admin-only.
+- Order reads are user/admin protected, and non-admin users only see their own orders.
+- Security config uses `FRONTEND_URL` for CORS, and `BookController` plus `OrderController` currently also include `@CrossOrigin(origins = "http://localhost:5173")`, so update those values if you deploy the frontend to a different domain.
+- `spring.jpa.hibernate.ddl-auto=update` is enabled, which is convenient for development but should be reviewed for stricter production workflows.
 
-frontend–backend integration
+## Screenshots
 
-environment variable configuration
+Suggested sections to add:
 
-📌 Notes
+- Home page
+- Books catalog
+- Book details
+- Cart
+- Checkout
+- UPI payment page
+- Admin dashboard
+- Admin books
+- Admin orders
+- Swagger UI
 
-the backend must allow the configured frontend domain via CORS
+## License
 
-JWT tokens are stored in local storage
-
-Axios automatically attaches the token to API requests
-
-older orders created before payment-method support may display fallback labels
-
-🔗 Related Files
-
-Key files in the frontend:
-
-API client
-
-src/services/api.js
-
-Routes
-
-src/App.jsx
-
-Homepage
-
-src/pages/HomePage.jsx
-
-Checkout
-
-src/pages/CheckoutPage.jsx
-
-UPI Payment
-
-src/pages/UpiPaymentPage.jsx
-
-Orders
-
-src/pages/OrdersPage.jsx
-🧠 Learning Outcome
-
-Building this project involved understanding how real-world systems work, including:
-
-full-stack architecture
-
-cloud deployment
-
-containerization
-
-cross-origin communication
-
-secure authentication flows
-
-📄 License
-
-This project is for educational and portfolio purposes.
+This project is intended for educational and portfolio use.
